@@ -4,6 +4,7 @@ const {engine} = require('express-edge')
 const mongoose = require('mongoose')
 const expressSession = require('express-session')
 const connectMongo = require('connect-mongo')
+const connectFlash = require('connect-flash')
 const fileUpload = require('express-fileupload')
 const bodyParser = require('body-parser')
 
@@ -22,6 +23,8 @@ const Post = require('./database/models/Post')
 
 const app = express()
 mongoose.connect('mongodb://localhost/node-js-blog')
+
+app.use(connectFlash())
 
 //Sessions
 const mongoStore = connectMongo(expressSession)
