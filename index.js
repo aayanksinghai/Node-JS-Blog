@@ -18,6 +18,16 @@ app.use(fileUpload())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
+const validateCreatePostMiddleware = (req, res, next) => {
+    if(!(req.files && req.files.image) || !req.body.username || !req.body.title || !req.body.subtitle || !req.body.content)
+    {
+        return res.redirect('/posts/new')
+    }
+    next()
+}
+
+app.use('/posts/store', validateCreatePostMiddleware)
+
 app.set('views', `${__dirname}/views`);
 
 app.get('/', async (req,res) => {
@@ -35,7 +45,10 @@ app.get('/posts/new', (req, res) =>
 app.post('/posts/store', (req,res) => {
     const { image } = req.files
     image.mv(path.resolve(__dirname,'public/posts', image.name), (error) => {
-        Post.create(req.body, (error, post) => {
+        Post.create({
+            ...req.body,
+            image: `/posts/${image.name}`
+        }, (error, post) => {
             res.redirect('/')
         })
     })
