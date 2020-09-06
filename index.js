@@ -10,6 +10,8 @@ const createPostController = require('./controllers/createPost')
 const homePageController = require('./controllers/homepage')
 const storePostController = require('./controllers/storePost')
 const getPostController = require('./controllers/getPost')
+const createUserController = require('./controllers/createUser')
+const storeUserController = require('./controllers/storeUser')
 
 //Models
 const Post = require('./database/models/Post')
@@ -24,23 +26,19 @@ app.use(fileUpload())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-const validateCreatePostMiddleware = (req, res, next) => {
-    if(!(req.files && req.files.image) || !req.body.username || !req.body.title || !req.body.subtitle || !req.body.content)
-    {
-        return res.redirect('/posts/new')
-    }
-    next()
-}
+const validateCreatePostMiddleware = require('./middleware/storePost')
 
 app.use('/posts/store', validateCreatePostMiddleware)
 
 app.set('views', `${__dirname}/views`);
 
 app.get('/', homePageController)
+app.get('/auth/register', createUserController)
 app.get('/posts/new', createPostController)
 app.post('/posts/store', storePostController)
 app.get('/post/:id', getPostController)
 
+app.post('/users/register', storeUserController)
 app.listen(4000, () => {
     console.log('App listening on port 4000!');
-});
+}); 
