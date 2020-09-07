@@ -1,6 +1,7 @@
 const express = require('express')
 const path = require('path')
 const {engine} = require('express-edge')
+const edge = require('edge.js')
 const mongoose = require('mongoose')
 const expressSession = require('express-session')
 const connectMongo = require('connect-mongo')
@@ -44,23 +45,31 @@ app.use(fileUpload())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
+
+//Custom Middlewares
 const validateCreatePostMiddleware = require('./middleware/storePost')
 const auth = require('./middleware/auth')
 const storePost = require('./middleware/storePost')
+const redirectIfAuthenticated = require('./middleware/redirectIfAuthenticated')
 
 
 
 
 app.set('views', `${__dirname}/views`);
 
+app.use('*', (req, res, next) => {
+    edge.global('auth', req.session.userId)
+    next()
+})
+
 app.get('/', homePageController)
-app.get('/auth/register', createUserController)
+app.get('/auth/register', redirectIfAuthenticated, createUserController)
 app.get('/posts/new', auth, createPostController)
 app.post('/posts/store', auth, storePost, storePostController)
 app.get('/post/:id', getPostController)
-app.get('/auth/login', loginController)
-app.post('/users/register', storeUserController)
-app.post('/users/login', loginUserController)
+app.get('/auth/login',redirectIfAuthenticated, loginController)
+app.post('/users/register', redirectIfAuthenticated, storeUserController)
+app.post('/users/login', redirectIfAuthenticated, loginUserController)
 
 app.listen(4000, () => {
     console.log('App listening on port 4000!');
