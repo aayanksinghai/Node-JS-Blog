@@ -18,6 +18,8 @@ const createUserController = require('./controllers/createUser')
 const storeUserController = require('./controllers/storeUser')
 const loginController = require('./controllers/login')
 const loginUserController = require('./controllers/loginUser')
+const logoutController = require('./controllers/logoutController')
+
 
 //Models
 const Post = require('./database/models/Post')
@@ -65,6 +67,7 @@ app.use('*', (req, res, next) => {
 app.get('/', homePageController)
 app.get('/auth/register', redirectIfAuthenticated, createUserController)
 app.get('/posts/new', auth, createPostController)
+app.get('/auth/logout', redirectIfAuthenticated, logoutController)
 app.post('/posts/store', auth, storePost, storePostController)
 app.get('/post/:id', getPostController)
 app.get('/auth/login',redirectIfAuthenticated, loginController)
