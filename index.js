@@ -2,6 +2,7 @@ const express = require('express')
 const path = require('path')
 const {engine} = require('express-edge')
 const edge = require('edge.js')
+const cloudinary = require('cloudinary')
 const mongoose = require('mongoose')
 const expressSession = require('express-session')
 const connectMongo = require('connect-mongo')
@@ -28,6 +29,12 @@ const app = express()
 mongoose.connect('mongodb://localhost/node-js-blog')
 
 app.use(connectFlash())
+
+cloudinary.config({
+    api_key: '234684454275765',
+    api_secret: 'GlCeaIJSjSsIR2GMaicUuVU6EdQ',
+    cloud_name: 'dkcxy6i12'
+})
 
 //Sessions
 const mongoStore = connectMongo(expressSession)
