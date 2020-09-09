@@ -59,6 +59,7 @@ const redirectIfAuthenticated = require('./middleware/redirectIfAuthenticated')
 
 app.set('views', `${__dirname}/views`);
 
+
 app.use('*', (req, res, next) => {
     edge.global('auth', req.session.userId)
     next()
@@ -73,6 +74,8 @@ app.get('/post/:id', getPostController)
 app.get('/auth/login',redirectIfAuthenticated, loginController)
 app.post('/users/register', redirectIfAuthenticated, storeUserController)
 app.post('/users/login', redirectIfAuthenticated, loginUserController)
+
+// 404 Page
 app.use((req, res) => res.render('not-found'))
 
 app.listen(4000, () => {
