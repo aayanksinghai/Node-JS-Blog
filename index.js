@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const path = require('path')
 const {engine} = require('express-edge')
@@ -26,21 +27,26 @@ const logoutController = require('./controllers/logoutController')
 const Post = require('./database/models/Post')
 
 const app = express()
-mongoose.connect('mongodb://localhost/node-js-blog')
+mongoose.connect(process.env.DB_URI, {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true
+})
 
 app.use(connectFlash())
 
 cloudinary.config({
-    api_key: '234684454275765',
-    api_secret: 'GlCeaIJSjSsIR2GMaicUuVU6EdQ',
-    cloud_name: 'dkcxy6i12'
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+    cloud_name: process.env.CLOUDINARY_NAME
 })
 
 //Sessions
 const mongoStore = connectMongo(expressSession)
 
 app.use(expressSession({
-    secret: 'secret',
+    secret: process.env.EXPRESS_SESSION_KEY,
     store: new mongoStore({
         mongooseConnection: mongoose.connection
     })
@@ -85,6 +91,6 @@ app.post('/users/login', redirectIfAuthenticated, loginUserController)
 // 404 Page
 app.use((req, res) => res.render('not-found'))
 
-app.listen(4000, () => {
-    console.log('App listening on port 4000!');
+app.listen(process.env.PORT, () => {
+    console.log(`App listening on port ${process.env.PORT}`);
 }); 
