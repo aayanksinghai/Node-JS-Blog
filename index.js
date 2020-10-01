@@ -91,6 +91,13 @@ app.post('/users/login', redirectIfAuthenticated, loginUserController)
 // 404 Page
 app.use((req, res) => res.render('not-found'))
 
-app.listen(process.env.PORT, () => {
+const server = app.listen(process.env.PORT, () => {
     console.log(`App listening on port ${process.env.PORT}`);
 }); 
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (err, promise) => {
+    console.log(`Error: ${err.message}`)
+    //Close server & exit process
+    server.close(() => process.exit(1))
+})
