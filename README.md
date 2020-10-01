@@ -1,4 +1,4 @@
-# POC - Node-JS-Blog
+# Node-JS-Blog
 
 > It is a blogging website created using NodeJs, ExpressJS, and database MongoDB and edge is used as the view template engine.
 
